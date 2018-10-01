@@ -40,13 +40,18 @@ export class AppService {
   //         );
   //   }
 
+  isLoggedIn(): boolean {
+    var token: String = this.token.getToken();
+    return token && token.length > 0;
+  }
+
   authenticate (credentials): Observable<any> {
     console.log('this.apiUrl');
     console.log(this.apiUrl);
     return  this.http.post<any>(this.apiUrl + 'token/generate-token', credentials).pipe(
         tap(response => {
             if ( response['status'] === 'SUCCESS') {
-              this.token.saveToken(response['data'].token);
+              this.token.saveToken(credentials.username, response['data'].token);
                 this.authenticated = response['data'].authenticated;
                 this.loggedInUserInfo = response['data'].userVO;
                 this.errorMessage = response['data'].errorMessage;
@@ -64,15 +69,23 @@ export class AppService {
 
     logout() {
         this.http.post('/logout', {}).pipe(
-          tap(data => console.log('All: ' + JSON.stringify(data))),
+          tap(
+            data => {
+              console.log('All: ' + JSON.stringify(data));
+              this.token.signOut();
+              this.authenticated = false;
+            }
+        ),
           catchError(this.handleError)
         ).subscribe();
+        this.token.signOut();
         this.authenticated = false;
         this.router.navigateByUrl('/login');
       }
 
       private handleError(err: HttpErrorResponse) {
         console.log('error in login');
+        this.token.signOut();
         this.authenticated = false;
         this.router.navigate(['/login']);
         // in a real world app, we may send the server to some remote logging infrastructure

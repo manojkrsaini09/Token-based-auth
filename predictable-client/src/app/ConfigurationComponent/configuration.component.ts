@@ -18,9 +18,11 @@ export class ConfigurationComponent implements OnInit {
     constructor(private app: AppService, private router: Router) {}
 
     ngOnInit() {
-        if (!this.app.authenticated) {
+        if (this.app.isLoggedIn()) {
+            this.router.navigate(['/configuration']);
+           } else {
             this.router.navigate(['/login']);
-        }
+           }
     }
     logout() {
         this.app.logout();

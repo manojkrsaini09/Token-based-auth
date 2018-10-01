@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: [ './login.component.css']
 })
- export class LoginComponent {
+ export class LoginComponent implements OnInit{
   pageTitle = 'Login Page';
   credentials = {username: '', password: ''};
   errorMessage = '';
@@ -16,21 +16,24 @@ import { Router } from '@angular/router';
   constructor(private app: AppService, private http: HttpClient, private router: Router) {
   }
 
-  // ngOnInit() {
-  //     if (!this.app.authenticated) {
-  //       this.app.authenticate(undefined).subscribe(
-  //         data => {
-  //           console.log('data');
-  //           if (this.app.authenticated) {
-  //             console.log('navigate to dashboard');
-  //               this.router.navigate(['/dashboard']);
-  //           }
-  //          },
-  //         // error => this.errorMessage = <any> error
-  //          error =>  this.errorMessage  = 'Invalid Credentials'
-  //      );
-  //     }
-  // }
+  ngOnInit() {
+      if (this.app.isLoggedIn()) {
+        this.router.navigate(['/dashboard']);
+      //   this.app.authenticate(undefined).subscribe(
+      //     data => {
+      //       console.log('data');
+      //       if (this.app.authenticated) {
+      //         console.log('navigate to dashboard');
+      //           this.router.navigate(['/dashboard']);
+      //       }
+      //      },
+      //     // error => this.errorMessage = <any> error
+      //      error =>  this.errorMessage  = 'Invalid Credentials'
+      //  );
+       } else {
+        this.router.navigate(['/login']);
+       }
+  }
 
   login() {
     this.app.authenticate(this.credentials).subscribe(

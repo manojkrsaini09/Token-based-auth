@@ -9,8 +9,21 @@ export  class DashboardComponent implements OnInit {
     constructor(private app: AppService, private router: Router) {}
 
     ngOnInit() {
-        if (!this.app.authenticated) {
+        if (this.app.isLoggedIn()) {
+            this.router.navigate(['/dashboard']);
+          //   this.app.authenticate(undefined).subscribe(
+          //     data => {
+          //       console.log('data');
+          //       if (this.app.authenticated) {
+          //         console.log('navigate to dashboard');
+          //           this.router.navigate(['/dashboard']);
+          //       }
+          //      },
+          //     // error => this.errorMessage = <any> error
+          //      error =>  this.errorMessage  = 'Invalid Credentials'
+          //  );
+           } else {
             this.router.navigate(['/login']);
-        }
+           }
     }
 }
