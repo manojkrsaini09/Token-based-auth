@@ -14,7 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -146,5 +149,18 @@ public class ProductionScheduleController {
                     , ExceptionType.GENERAL_ERROR.getCode());
         }
     }*/
+
+   @PostMapping("/schedule/upload")
+   public ResponseEntity<ResponseObject> uploadSchedule(@RequestParam("file") MultipartFile file) {
+       String message = "";
+       try {
+
+           message = "You successfully uploaded " + file.getOriginalFilename() + "!";
+           return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.OK);
+       } catch (Exception e) {
+           message = "FAIL to upload " + file.getOriginalFilename() + "!";
+           return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.INTERNAL_SERVER_ERROR);
+       }
+   }
 
 }
