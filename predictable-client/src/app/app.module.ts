@@ -48,6 +48,8 @@ import {ToastModule} from 'primeng/toast';
 import {MessageService} from 'primeng/api';
 import { RequestInterceptor } from './HttpInterceptor/request.interceptor';
 import { TokenStorage } from './HttpInterceptor/token.storage';
+import { FileUploadService } from './Services/file-upload.service';
+import { FileUploadComponent } from './FileUpload/file-upload.component';
 
 // @Injectable()
 // export class XhrInterceptor implements HttpInterceptor {
@@ -144,7 +146,8 @@ const appRoutes: Routes = [
     OrganizationComponent,
     ProductsComponent,
     LinesComponent,
-    EventTypeComponent
+    EventTypeComponent,
+    FileUploadComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -158,7 +161,7 @@ const appRoutes: Routes = [
   ],
   providers: [AppService, UserService, RoleService, OrganizationService, ProductService ,
     CompanyService, MessageService, LineService, EventTypeService,
-    UserInfoProvider, TokenStorage,
+    UserInfoProvider, TokenStorage, FileUploadService,
     // { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

@@ -10,7 +10,7 @@ import { TokenStorage } from './HttpInterceptor/token.storage';
 export class AppService {
   authenticated = false;
   loggedInUserInfo: User;
-  apiUrl = 'http://localhost:5001/';
+  apiUrl = '';
   errorMessage = '';
 
   constructor(private http: HttpClient, private router: Router,

@@ -1,12 +1,13 @@
 <div class="h-100 d-flex flex-column">
             <div class="row content-inner">
-              <div class="col-12">
+              <!-- <div class="col-12">
                 <input type="file" name="" placeholder="Upload file">
                 <button class="btn btn-primary" type="submit">Upload</button>
               </div>
               <div class="col-12">
                 <h5 class="mt-3 text-center">Production Schedules</h5>
-              </div>
+              </div> -->
+              <app-file-upload [apiUrl]="uploadUrl"> </app-file-upload>
               <div class="col-12 table-responsive mt-1">
                   <table class="table table-bordered">
                     <thead>

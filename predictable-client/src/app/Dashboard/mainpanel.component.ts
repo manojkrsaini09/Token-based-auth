@@ -4,4 +4,5 @@ import { Component } from '@angular/core';
     templateUrl: 'mainpanel.component.html'
 })
 export class MainPanelComponent {
+    uploadUrl = '/schedule/upload';
 }
