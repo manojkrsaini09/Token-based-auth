@@ -32,6 +32,7 @@ import com.metacube.sageclarity.predictable.service.UserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@RequestMapping("/api")
 public class MainController {
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 

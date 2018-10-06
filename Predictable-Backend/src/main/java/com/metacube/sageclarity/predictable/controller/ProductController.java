@@ -23,6 +23,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@RequestMapping("/api")
 public class ProductController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private static final ObjectMapper mapper = new ObjectMapper();

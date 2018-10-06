@@ -8,24 +8,26 @@ import {MessageService} from 'primeng/api';
 @Component({
     templateUrl : './product.component.html'
 })
-export class ProductsComponent{
+export class ProductsComponent implements OnInit {
     products: IProduct[];
     orgnizations: IOrgnization[];
     errorMessage: string;
     editableMode = false;
     selectedProduct: IProduct;
-    isSuperAdmin:boolean=false;
-    userOrgnizationId:number = 50;
+    isSuperAdmin: boolean = false;
+    userOrgnizationId: number = 50;
 
     constructor(private productService: ProductService, private companyService: CompanyService, private appService:AppService,
                 private messageService: MessageService) {}
 
     ngOnInit(): void {
-        if(this.appService.loggedInUserInfo){
-            if(this.appService.loggedInUserInfo.roles != null && this.appService.loggedInUserInfo.roles.length > 0 && this.appService.loggedInUserInfo.roles[0].role == "superadmin"){
+        if (this.appService.loggedInUserInfo) {
+            if ( this.appService.loggedInUserInfo.roles != null &&
+                 this.appService.loggedInUserInfo.roles.length > 0 &&
+                 this.appService.loggedInUserInfo.roles[0].role == 'superadmin') {
                 this.isSuperAdmin = true;
             }
-            if(this.appService.loggedInUserInfo.companyVO != null){
+            if (this.appService.loggedInUserInfo.companyVO != null) {
                 this.userOrgnizationId = this.appService.loggedInUserInfo.companyVO.id;
             }
         }
@@ -53,11 +55,10 @@ export class ProductsComponent{
     }
 
     saveProduct(): void {
-        if(!this.isSuperAdmin){
+        if ( !this.isSuperAdmin ) {
             this.selectedProduct.companyId = this.userOrgnizationId;
         }
-        
-        if(this.selectedProduct.id > 0){
+        if ( this.selectedProduct.id > 0) {
             this.productService.updateProduct(this.selectedProduct).subscribe(product => {
                 this.selectedProduct = {} as IProduct;
                 this.editableMode = false;
@@ -69,7 +70,8 @@ export class ProductsComponent{
                 this.messageService.add({severity:'error', summary: 'Error', detail:'Someting went wrong. Please try later'});
             });
         }
-        else{
+        else 
+        {
             this.productService.saveProduct(this.selectedProduct).subscribe(product => {
                 this.selectedProduct = {} as IProduct;
                 this.editableMode = false;

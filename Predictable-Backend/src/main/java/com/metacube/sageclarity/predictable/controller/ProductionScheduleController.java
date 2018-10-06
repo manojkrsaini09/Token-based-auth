@@ -8,6 +8,8 @@ import com.metacube.sageclarity.predictable.exception.InvalidParamException;
 import com.metacube.sageclarity.predictable.helper.RequestHelper;
 import com.metacube.sageclarity.predictable.helper.ResponseHelper;
 import com.metacube.sageclarity.predictable.service.ProductionScheduleMasterService;
+import com.metacube.sageclarity.predictable.service.XLSDataReader;
+import com.metacube.sageclarity.predictable.vo.DataUploadRowVO;
 import com.metacube.sageclarity.predictable.vo.ProductionScheduleMasterVO;
 import com.metacube.sageclarity.predictable.vo.ResponseObject;
 import org.apache.commons.lang3.StringUtils;
@@ -23,12 +25,16 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@RequestMapping("/api")
 public class ProductionScheduleController {
     private static final Logger logger = LoggerFactory.getLogger(ProductionScheduleController.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private ProductionScheduleMasterService scheduleService;
+
+    @Autowired
+    private XLSDataReader dataReader;
 
     @RequestMapping(value = "/schedule/create", produces = "application/json",consumes="application/json"
             ,method = RequestMethod.POST)
@@ -154,7 +160,11 @@ public class ProductionScheduleController {
    public ResponseEntity<ResponseObject> uploadSchedule(@RequestParam("file") MultipartFile file) {
        String message = "";
        try {
-
+           DataUploadRowVO dataVO = dataReader.readData(file.getInputStream());
+           if(dataVO==null){
+               message = "Failed to read file " + file.getOriginalFilename() + "!";
+               return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.INTERNAL_SERVER_ERROR);
+           }
            message = "You successfully uploaded " + file.getOriginalFilename() + "!";
            return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.OK);
        } catch (Exception e) {
@@ -162,5 +172,4 @@ public class ProductionScheduleController {
            return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.INTERNAL_SERVER_ERROR);
        }
    }
-
 }

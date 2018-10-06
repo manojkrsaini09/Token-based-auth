@@ -10,7 +10,7 @@ import { TokenStorage } from './HttpInterceptor/token.storage';
 export class AppService {
   authenticated = false;
   loggedInUserInfo: User;
-  apiUrl = '';
+  apiUrl = '/api/';
   errorMessage = '';
 
   constructor(private http: HttpClient, private router: Router,
@@ -68,16 +68,16 @@ export class AppService {
 }
 
     logout() {
-        this.http.post('/logout', {}).pipe(
-          tap(
-            data => {
-              console.log('All: ' + JSON.stringify(data));
-              this.token.signOut();
-              this.authenticated = false;
-            }
-        ),
-          catchError(this.handleError)
-        ).subscribe();
+        // this.http.post('/logout', {}).pipe(
+        //   tap(
+        //     data => {
+        //       console.log('All: ' + JSON.stringify(data));
+        //       this.token.signOut();
+        //       this.authenticated = false;
+        //     }
+        // ),
+        //   catchError(this.handleError)
+        // ).subscribe();
         this.token.signOut();
         this.authenticated = false;
         this.router.navigateByUrl('/login');

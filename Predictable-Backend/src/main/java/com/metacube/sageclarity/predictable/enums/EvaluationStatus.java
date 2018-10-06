@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public enum EvaluationStatus {
+	IN_PROGRESS("In Progress"),
 	UPLOADED("Uploaded") ,
 	PREDICTIONS_IN_PROGRESS("Predictions in  progress"),
 	PREDICTIONS_MADE("Predictions Made"),

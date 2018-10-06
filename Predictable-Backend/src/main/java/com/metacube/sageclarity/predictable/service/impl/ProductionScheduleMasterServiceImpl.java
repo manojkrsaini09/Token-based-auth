@@ -3,14 +3,18 @@ package com.metacube.sageclarity.predictable.service.impl;
 import com.metacube.sageclarity.predictable.dao.ProductionScheduleMasterDao;
 import com.metacube.sageclarity.predictable.entity.Company;
 import com.metacube.sageclarity.predictable.entity.ProductionScheduleMaster;
+import com.metacube.sageclarity.predictable.entity.User;
+import com.metacube.sageclarity.predictable.enums.EvaluationStatus;
 import com.metacube.sageclarity.predictable.exception.ApplicationLevelException;
 import com.metacube.sageclarity.predictable.exception.InvalidParamException;
 import com.metacube.sageclarity.predictable.service.ProductionScheduleMasterService;
+import com.metacube.sageclarity.predictable.vo.DataUploadRowVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -93,5 +97,17 @@ public class ProductionScheduleMasterServiceImpl implements ProductionScheduleMa
             logger.error(message, e);
             throw new ApplicationLevelException(message, e);
         }
+    }
+
+    @Override
+    public void createProductionScheduleFromExcelDataVO(DataUploadRowVO dataVO, String fileName, User user) {
+            ProductionScheduleMaster scheduleMaster = new ProductionScheduleMaster();
+            //scheduleMaster.setDate(LocalDateTime.now());
+            scheduleMaster.setName(fileName);
+            scheduleMaster.setActive(true);
+            scheduleMaster.setEvaluationStatus(EvaluationStatus.IN_PROGRESS);
+            scheduleMaster.setUser(user);
+            scheduleMaster.setCompany(user.getCompany());
+
     }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { HttpResponse, HttpEventType } from '@angular/common/http';
+import { HttpResponse, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { FileUploadService } from '../Services/file-upload.service';
+import { AppService } from '../app.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-file-upload',
@@ -12,7 +14,7 @@ export class FileUploadComponent implements OnInit {
   @Input() apiUrl: string;
   progress: { percentage: number } = { percentage: 0 };
 
-  constructor(private uploadService: FileUploadService) { }
+  constructor(private uploadService: FileUploadService, private messageService: MessageService) { }
   ngOnInit() {
   }
   selectFile(event) {
@@ -26,8 +28,19 @@ export class FileUploadComponent implements OnInit {
         this.progress.percentage = Math.round(100 * event.loaded / event.total);
       } else if (event instanceof HttpResponse) {
         console.log('File is completely uploaded!');
+        console.log(event.body);
+        this.messageService.add({severity: 'success', summary: 'Successfully Processed',
+         detail: 'File upload task has been initiated.'});
+       // var resJson = JSON.parse(event.body);
       }
-    });
+    },
+    error => {
+      this.messageService.add({severity:'error', summary: 'Error', detail:'Error In File Upload'});
+      console.log('in error response');
+          console.log('error status>>>');
+          console.log(error.status);
+          console.log(error.message);
+  });
     this.selectedFiles = undefined;
   }
 }

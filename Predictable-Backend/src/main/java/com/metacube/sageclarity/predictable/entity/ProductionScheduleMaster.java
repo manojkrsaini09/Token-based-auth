@@ -46,7 +46,9 @@ public class ProductionScheduleMaster extends BaseEntity<String>{
 
     public ProductionScheduleMaster() {
     }
-
+    public ProductionScheduleMaster(Long id) {
+        super.setId(id);
+    }
     public ProductionScheduleMaster(ProductionScheduleMasterVO scheduleMasterVO) {
         if(scheduleMasterVO.getId()!=null){
             super.setId(scheduleMasterVO.getId());

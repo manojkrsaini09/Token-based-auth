@@ -1,6 +1,7 @@
 package com.metacube.sageclarity.predictable.config.JWTConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.metacube.sageclarity.predictable.config.Filters.CORSFilter;
 import com.metacube.sageclarity.predictable.config.handler.*;
 import com.metacube.sageclarity.predictable.service.securityhelpers.CustomeUserDetailService;
 import org.slf4j.Logger;
@@ -70,17 +71,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationFilter();
     }
 
+    @Bean
+    public CORSFilter corsFilterBean() throws Exception {
+        return new CORSFilter();
+    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().
                 authorizeRequests()
-                .antMatchers("/token/*", "/signup").permitAll()
+                .antMatchers("/api/token/*", "/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler)
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                  .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                 http
+                 http.addFilterBefore(corsFilterBean(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
     }
 

@@ -37,10 +37,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
                 logger.error("an error occured during getting username from token", e);
+                chain.doFilter(req, res);
             } catch (ExpiredJwtException e) {
                 logger.warn("the token is expired and not valid anymore", e);
+                chain.doFilter(req, res);
             } catch(SignatureException e){
                 logger.error("Authentication Failed. Username or Password not valid.");
+                chain.doFilter(req, res);
             }
         } else {
             logger.warn("couldn't find bearer string, will ignore the header");
@@ -55,6 +58,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                 logger.info("authenticated user " + username + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            }else{
+                SecurityContextHolder.clearContext();
+                chain.doFilter(req, res);
             }
         }
 
