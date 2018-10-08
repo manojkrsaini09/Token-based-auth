@@ -12,5 +12,5 @@ public interface ProductionScheduleDataService {
     public ProductionScheduleData save(ProductionScheduleData schedule) throws ApplicationLevelException;
     public List<ProductionScheduleData> getAll() throws ApplicationLevelException;
     public List<ProductionScheduleData> getByProductionScheduleMaster(Long masterId) throws ApplicationLevelException;
-    public List<ProductionScheduleData> getDataListFromUploadedFileData(DataUploadRowVO dataVO, ProductionScheduleMaster master);
+    public void createScheduleDataListFromUploadedFileData(DataUploadRowVO dataVO, ProductionScheduleMaster master);
 }

@@ -2,16 +2,20 @@ package com.metacube.sageclarity.predictable.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metacube.sageclarity.predictable.entity.ProductionScheduleMaster;
+import com.metacube.sageclarity.predictable.entity.User;
 import com.metacube.sageclarity.predictable.enums.ExceptionType;
 import com.metacube.sageclarity.predictable.exception.ApplicationLevelException;
 import com.metacube.sageclarity.predictable.exception.InvalidParamException;
 import com.metacube.sageclarity.predictable.helper.RequestHelper;
 import com.metacube.sageclarity.predictable.helper.ResponseHelper;
+import com.metacube.sageclarity.predictable.service.ProductionScheduleDataService;
 import com.metacube.sageclarity.predictable.service.ProductionScheduleMasterService;
 import com.metacube.sageclarity.predictable.service.XLSDataReader;
+import com.metacube.sageclarity.predictable.util.ApplicationUtil;
 import com.metacube.sageclarity.predictable.vo.DataUploadRowVO;
 import com.metacube.sageclarity.predictable.vo.ProductionScheduleMasterVO;
 import com.metacube.sageclarity.predictable.vo.ResponseObject;
+import com.metacube.sageclarity.predictable.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -32,6 +37,9 @@ public class ProductionScheduleController {
 
     @Autowired
     private ProductionScheduleMasterService scheduleService;
+
+    @Autowired
+    private ProductionScheduleDataService productionScheduleDataService;
 
     @Autowired
     private XLSDataReader dataReader;
@@ -157,7 +165,7 @@ public class ProductionScheduleController {
     }*/
 
    @PostMapping("/schedule/upload")
-   public ResponseEntity<ResponseObject> uploadSchedule(@RequestParam("file") MultipartFile file) {
+   public ResponseEntity<ResponseObject> uploadSchedule(@RequestParam("file") MultipartFile file,HttpSession session) {
        String message = "";
        try {
            DataUploadRowVO dataVO = dataReader.readData(file.getInputStream());
@@ -165,7 +173,18 @@ public class ProductionScheduleController {
                message = "Failed to read file " + file.getOriginalFilename() + "!";
                return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.INTERNAL_SERVER_ERROR);
            }
-           message = "You successfully uploaded " + file.getOriginalFilename() + "!";
+           UserVO userVO = ApplicationUtil.getUser(session);
+           if(userVO == null){
+               return new ResponseEntity(ResponseObject.getResponse("Unable to find user."),HttpStatus.INTERNAL_SERVER_ERROR);
+           }
+           User user = new User(userVO);
+           ProductionScheduleMaster master = scheduleService.createProductionScheduleFromExcelDataVO(dataVO,file.getOriginalFilename(),user);
+           if(master==null || master.getId()==0){
+               message = "Unable to create schedule master from file." + file.getOriginalFilename() + "!";
+               return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.INTERNAL_SERVER_ERROR);
+           }
+           productionScheduleDataService.createScheduleDataListFromUploadedFileData(dataVO,master);
+           message = "Schedule creation task has been initiated for file." + file.getOriginalFilename() + "!";
            return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.OK);
        } catch (Exception e) {
            message = "FAIL to upload " + file.getOriginalFilename() + "!";

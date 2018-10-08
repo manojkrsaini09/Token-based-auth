@@ -33,4 +33,9 @@ public class ProductionScheduleDataDaoImpl implements ProductionScheduleDataDao 
     public List<ProductionScheduleData> getByProductionScheduleMaster(ProductionScheduleMaster master) {
         return jpaProductionScheduleDataDao.getByScheduleMaster(master);
     }
+
+    @Override
+    public List<ProductionScheduleData> saveAll(List<ProductionScheduleData> dataList) {
+        return jpaProductionScheduleDataDao.saveAll((Iterable<ProductionScheduleData>) dataList);
+    }
 }

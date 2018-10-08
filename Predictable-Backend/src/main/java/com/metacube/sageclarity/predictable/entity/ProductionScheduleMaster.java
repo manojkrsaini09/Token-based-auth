@@ -44,6 +44,9 @@ public class ProductionScheduleMaster extends BaseEntity<String>{
           )
     private List<ProductionScheduleData> scheduleData = new ArrayList<>();
 
+    @Column(length = 1000)
+    private String errors;
+
     public ProductionScheduleMaster() {
     }
     public ProductionScheduleMaster(Long id) {
@@ -151,5 +154,13 @@ public class ProductionScheduleMaster extends BaseEntity<String>{
 
     public void setScheduleData(List<ProductionScheduleData> scheduleData) {
         this.scheduleData = scheduleData;
+    }
+
+    public String getErrors() {
+        return errors;
+    }
+
+    public void setErrors(String errors) {
+        this.errors = errors;
     }
 }

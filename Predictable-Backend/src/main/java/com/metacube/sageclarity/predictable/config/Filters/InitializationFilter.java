@@ -4,6 +4,7 @@ import com.metacube.sageclarity.predictable.controller.UserController;
 import com.metacube.sageclarity.predictable.entity.User;
 import com.metacube.sageclarity.predictable.enums.ExceptionType;
 import com.metacube.sageclarity.predictable.exception.ApplicationLevelException;
+import com.metacube.sageclarity.predictable.helper.constant.CommonConstant;
 import com.metacube.sageclarity.predictable.service.UserService;
 import com.metacube.sageclarity.predictable.vo.ResponseObject;
 import com.metacube.sageclarity.predictable.vo.UserVO;
@@ -42,11 +43,11 @@ public class InitializationFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         Principal principal = req.getUserPrincipal();
-        if(req.getSession().getAttribute("user") == null && principal!=null){
+        if(req.getSession().getAttribute(CommonConstant.APP_USER) == null && principal!=null){
             User user = null;
             try {
                 user = userService.getByUserName(principal.getName());
-                req.getSession().setAttribute("user",new UserVO(user));
+                req.getSession().setAttribute(CommonConstant.APP_USER,new UserVO(user));
             } catch (ApplicationLevelException e) {
                 logger.error(e.getMessage(), e);
             }

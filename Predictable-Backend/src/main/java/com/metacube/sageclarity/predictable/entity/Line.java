@@ -12,7 +12,10 @@ public class Line extends BaseEntity<String>  {
     private Company company;
 
     @Column
-    private Boolean isActive;
+    private Boolean isActive=true;
+
+    @Column
+    private Boolean isDeleted=false;
 
     public String getLineName() {
         return lineName;
@@ -36,5 +39,13 @@ public class Line extends BaseEntity<String>  {
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }

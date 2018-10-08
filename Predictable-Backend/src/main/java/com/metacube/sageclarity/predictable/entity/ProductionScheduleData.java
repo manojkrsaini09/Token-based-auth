@@ -37,6 +37,9 @@ public class ProductionScheduleData extends BaseEntity<String> implements Serial
     @Column
     private Boolean isActive;
 
+    @Column(length = 500)
+    private  String  errors;
+
     public ProductionScheduleMaster getScheduleMaster() {
         return scheduleMaster;
     }
@@ -107,5 +110,13 @@ public class ProductionScheduleData extends BaseEntity<String> implements Serial
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public String getErrors() {
+        return errors;
+    }
+
+    public void setErrors(String errors) {
+        this.errors = errors;
     }
 }

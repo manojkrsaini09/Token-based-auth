@@ -44,11 +44,8 @@ spring:
 #        jdbc:
 #          time_zone: UTC
 
-security:
-  user:
-    password: password
-  ignored:
-  - "*.bundle.*"
-logging:
-  level:
-    org.springframework.security: DEBUG
+  security:
+    strategy: MODE_INHERITABLETHREADLOCAL
+  logging:
+    level:
+      org.springframework.security: DEBUG

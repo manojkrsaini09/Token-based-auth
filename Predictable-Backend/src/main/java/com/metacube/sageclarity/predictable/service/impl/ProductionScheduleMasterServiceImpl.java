@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -100,7 +99,7 @@ public class ProductionScheduleMasterServiceImpl implements ProductionScheduleMa
     }
 
     @Override
-    public void createProductionScheduleFromExcelDataVO(DataUploadRowVO dataVO, String fileName, User user) {
+    public ProductionScheduleMaster createProductionScheduleFromExcelDataVO(DataUploadRowVO dataVO, String fileName, User user){
             ProductionScheduleMaster scheduleMaster = new ProductionScheduleMaster();
             //scheduleMaster.setDate(LocalDateTime.now());
             scheduleMaster.setName(fileName);
@@ -108,6 +107,11 @@ public class ProductionScheduleMasterServiceImpl implements ProductionScheduleMa
             scheduleMaster.setEvaluationStatus(EvaluationStatus.IN_PROGRESS);
             scheduleMaster.setUser(user);
             scheduleMaster.setCompany(user.getCompany());
-
+            try{
+                this.save(scheduleMaster);
+            }catch(Exception e){
+                logger.error("Unable to create Schedule master from excel file. ",e);
+            }
+            return scheduleMaster;
     }
 }

@@ -10,4 +10,5 @@ public interface ProductionScheduleDataDao {
     public List<ProductionScheduleData> getAll();
     public ProductionScheduleData getById(Long id);
     public List<ProductionScheduleData> getByProductionScheduleMaster(ProductionScheduleMaster master);
+    public List<ProductionScheduleData> saveAll(List<ProductionScheduleData> dataList);
 }

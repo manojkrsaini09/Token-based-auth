@@ -13,5 +13,5 @@ public interface ProductionScheduleMasterService {
     public List<ProductionScheduleMaster> getAll() throws ApplicationLevelException;
     public Boolean deleteSchedule(ProductionScheduleMaster schedule) throws ApplicationLevelException;
     public List<ProductionScheduleMaster> getAllByCompanyId(Long companyId) throws ApplicationLevelException;
-    public void createProductionScheduleFromExcelDataVO(DataUploadRowVO dataVO, String fileName,User user);
+    public ProductionScheduleMaster createProductionScheduleFromExcelDataVO(DataUploadRowVO dataVO, String fileName, User user);
 }
