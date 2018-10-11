@@ -1,8 +1,13 @@
 package com.metacube.sageclarity.predictable.util;
 
 
+import com.metacube.sageclarity.predictable.exception.ApplicationLevelException;
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -136,5 +141,32 @@ public class LocalizationUtil {
         calendar.set(Calendar.MILLISECOND,0);
         calendar.add(Calendar.DATE,days);
         return calendar.getTime();
+    }
+
+    public static Date getDateFromStringDate(String date, String pattern){
+            Date parsedDate = null;
+            DateFormat dateFormat = null;
+            try {
+                if (pattern != null) {
+                    dateFormat = new SimpleDateFormat(pattern);
+                    parsedDate = dateFormat.parse(date);
+
+                } else {
+                    return  null;
+                }
+            } catch (ParseException e) {
+                new ApplicationLevelException("Invalid input date:" + date);
+            }
+            return parsedDate;
+    }
+
+    public static LocalDateTime getLocalDateTimeFromStringDate(String date, String pattern){
+        Date parsedDate = getDateFromStringDate(date,pattern);
+        if(parsedDate!=null)
+        return parsedDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        else
+            return null;
     }
 }

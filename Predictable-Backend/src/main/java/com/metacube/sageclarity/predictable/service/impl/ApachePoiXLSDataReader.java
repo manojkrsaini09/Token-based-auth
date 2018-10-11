@@ -1,6 +1,7 @@
 package com.metacube.sageclarity.predictable.service.impl;
 
 import com.metacube.sageclarity.predictable.service.XLSDataReader;
+import com.metacube.sageclarity.predictable.util.ApplicationUtil;
 import com.metacube.sageclarity.predictable.vo.DataUploadRowVO;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -9,10 +10,13 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,11 +91,15 @@ public class ApachePoiXLSDataReader implements XLSDataReader {
                     case NUMERIC:
                         if (DateUtil.isCellDateFormatted(cell)) {
                             value = cell.getDateCellValue();
-                            sdf = new SimpleDateFormat("MM/dd/yyyy");
+                           // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm:ss");
+                            //LocalDateTime localDateTime = LocalDateTime.parse(time1);
+                           // System.out.println(localDateTime.format(formatter));
+                            sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
                             value = sdf.format(cell.getDateCellValue());
 
                         } else {
-                            value =  cell.getNumericCellValue();;
+                            value =  cell.getNumericCellValue();
+                            value = ApplicationUtil.getLong(value);
                         }
                         break;
 

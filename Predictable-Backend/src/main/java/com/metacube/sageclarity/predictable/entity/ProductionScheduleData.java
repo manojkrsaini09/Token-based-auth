@@ -23,22 +23,25 @@ public class ProductionScheduleData extends BaseEntity<String> implements Serial
     private Product product;
 
     @Column
-    private int orderQuantity;
+    private Long orderQuantity;
 
     @Column
-    private Double machineTime;
+    private Long machineTime;
 
     @Column
-    private Double setupTime;
+    private Long setupTime;
 
     @Column
     private LocalDateTime scheduledStart;
 
     @Column
-    private Boolean isActive;
+    private Boolean isActive=true;
 
     @Column(length = 500)
     private  String  errors;
+
+    @Column
+    private String unit;
 
     public ProductionScheduleMaster getScheduleMaster() {
         return scheduleMaster;
@@ -72,27 +75,19 @@ public class ProductionScheduleData extends BaseEntity<String> implements Serial
         this.product = product;
     }
 
-    public int getOrderQuantity() {
-        return orderQuantity;
-    }
-
-    public void setOrderQuantity(int orderQuantity) {
-        this.orderQuantity = orderQuantity;
-    }
-
-    public Double getMachineTime() {
+    public Long getMachineTime() {
         return machineTime;
     }
 
-    public void setMachineTime(Double machineTime) {
+    public void setMachineTime(Long machineTime) {
         this.machineTime = machineTime;
     }
 
-    public Double getSetupTime() {
+    public Long getSetupTime() {
         return setupTime;
     }
 
-    public void setSetupTime(Double setupTime) {
+    public void setSetupTime(Long setupTime) {
         this.setupTime = setupTime;
     }
 
@@ -118,5 +113,21 @@ public class ProductionScheduleData extends BaseEntity<String> implements Serial
 
     public void setErrors(String errors) {
         this.errors = errors;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public Long getOrderQuantity() {
+        return orderQuantity;
+    }
+
+    public void setOrderQuantity(Long orderQuantity) {
+        this.orderQuantity = orderQuantity;
     }
 }
