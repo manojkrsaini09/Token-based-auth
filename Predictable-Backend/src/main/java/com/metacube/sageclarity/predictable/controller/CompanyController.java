@@ -51,7 +51,7 @@ public class CompanyController {
     @RequestMapping(value = "/company/all", produces = "application/json",method = RequestMethod.GET)
     public
     @ResponseBody
-    @PreAuthorize("hasAuthority('Admin') OR hasAuthority('Super Admin')")
+    @PreAuthorize("hasAuthority('Super Admin')")
     ResponseObject getAllCompanies(){
         try {
             List<Company> companies = null;
