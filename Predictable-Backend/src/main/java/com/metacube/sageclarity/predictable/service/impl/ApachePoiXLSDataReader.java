@@ -99,7 +99,10 @@ public class ApachePoiXLSDataReader implements XLSDataReader {
 
                         } else {
                             value =  cell.getNumericCellValue();
-                            value = ApplicationUtil.getLong(value);
+//                            if(value instanceof Long){
+//                                value = ApplicationUtil.getLong(value);
+//                            }
+                           // value = ApplicationUtil.getLong(value);
                         }
                         break;
 

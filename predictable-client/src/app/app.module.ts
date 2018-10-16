@@ -28,7 +28,6 @@ import { UserService } from './Dashboard/UsersComponent/user.service';
 import { ProductService } from './Services/product.service';
 import { LineService } from './Services/line.service';
 import { EventTypeService } from './Services/eventType.service';
-import { CompanyService } from './Services/company.service';
 import { RoleService } from './Dashboard/RolesComponent/role.service';
 import { RoleComponent } from './Dashboard/RolesComponent/role.component';
 import { ConfigurationComponent } from './ConfigurationComponent/configuration.component';
@@ -50,6 +49,7 @@ import { RequestInterceptor } from './HttpInterceptor/request.interceptor';
 import { TokenStorage } from './HttpInterceptor/token.storage';
 import { FileUploadService } from './Services/file-upload.service';
 import { FileUploadComponent } from './FileUpload/file-upload.component';
+import { ProductScheduleService } from './Services/product-schedule.service';
 
 // @Injectable()
 // export class XhrInterceptor implements HttpInterceptor {
@@ -160,8 +160,8 @@ const appRoutes: Routes = [
     BrowserAnimationsModule
   ],
   providers: [AppService, UserService, RoleService, OrganizationService, ProductService ,
-    CompanyService, MessageService, LineService, EventTypeService,
-    UserInfoProvider, TokenStorage, FileUploadService,
+      MessageService, LineService, EventTypeService,
+    UserInfoProvider, TokenStorage, FileUploadService, ProductScheduleService,
     // { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

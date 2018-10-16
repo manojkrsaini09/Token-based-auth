@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -16,6 +17,7 @@ public class LocalizationUtil {
     private static final String DATE = "yyyy-MM-dd";
     private static final String YEAR_FORMAT = "yy";
     private static final String MONTH_YEAR_FORMAT = "MMM-yy";
+    private static final String US_DATE_TIME_FORMATE = "MM/dd/yyyy hh:mm:ss";
 
     public static final Date getTodaysDate(){
         return Calendar.getInstance().getTime();
@@ -168,5 +170,17 @@ public class LocalizationUtil {
                 .toLocalDateTime();
         else
             return null;
+    }
+
+    public static String getFormattedDateTime(LocalDateTime date, DateTimeFormatter formatter){
+        if(date!=null) {
+            if(formatter==null){
+                formatter = DateTimeFormatter.ofPattern(US_DATE_TIME_FORMATE);
+            }
+            return date.format(formatter);
+        }
+        else{
+            return "";
+        }
     }
 }

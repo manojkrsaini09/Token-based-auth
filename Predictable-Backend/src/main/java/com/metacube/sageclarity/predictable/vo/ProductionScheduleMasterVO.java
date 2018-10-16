@@ -1,6 +1,9 @@
 package com.metacube.sageclarity.predictable.vo;
 
 import com.metacube.sageclarity.predictable.entity.ProductionScheduleMaster;
+import com.metacube.sageclarity.predictable.util.LocalizationUtil;
+
+import java.time.LocalDateTime;
 
 public class ProductionScheduleMasterVO {
     private Long id;
@@ -12,6 +15,8 @@ public class ProductionScheduleMasterVO {
     private Long companyId;
     private UserVO userVO;
     private Long userId;
+    private String date;
+    private String errors;
 
     public ProductionScheduleMasterVO() {
     }
@@ -34,6 +39,12 @@ public class ProductionScheduleMasterVO {
             this.userVO = new UserVO(schedule.getUser());
             this.userId = schedule.getUser().getId();
         }
+
+        LocalDateTime date  = schedule.getCreatedDate();
+        if(date!=null){
+           this.date =  LocalizationUtil.getFormattedDateTime(date,null);
+        }
+        this.errors = schedule.getErrors();
     }
 
     public CompanyVO getCompanyVO() {
@@ -106,6 +117,22 @@ public class ProductionScheduleMasterVO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getErrors() {
+        return errors;
+    }
+
+    public void setErrors(String errors) {
+        this.errors = errors;
     }
 }
 

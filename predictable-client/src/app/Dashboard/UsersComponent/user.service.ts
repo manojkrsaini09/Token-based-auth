@@ -19,9 +19,7 @@ export class UserService {
             tap( response => {
                 console.log('user data:');
                 console.log(response);
-                if ( response['status'] === 'SUCCESS') {
-                    this.errorMessage = response['data'].errorMessage;
-                } else {
+                if ( response['status'] !== 'SUCCESS') {
                     this.errorMessage = response['data'].errorMessage;
                 }
             }),
@@ -32,9 +30,7 @@ export class UserService {
         return this.http.post(this.appService.apiUrl + 'user/create', user).pipe(
             tap( response => {
                 console.log(response);
-                if ( response['status'] === 'SUCCESS') {
-                    this.errorMessage = response['data'].errorMessage;
-                } else {
+                if ( response['status'] !== 'SUCCESS') {
                     this.errorMessage = response['data'].errorMessage;
                 }
             }),

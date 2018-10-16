@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { HttpResponse, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { FileUploadService } from '../Services/file-upload.service';
 import { AppService } from '../app.service';
@@ -12,6 +12,7 @@ export class FileUploadComponent implements OnInit {
   selectedFiles: FileList;
   currentFileUpload: File;
   @Input() apiUrl: string;
+  @Output() uploadResponse = new EventEmitter();
   progress: { percentage: number } = { percentage: 0 };
 
   constructor(private uploadService: FileUploadService, private messageService: MessageService) { }
@@ -29,13 +30,15 @@ export class FileUploadComponent implements OnInit {
       } else if (event instanceof HttpResponse) {
         console.log('File is completely uploaded!');
         console.log(event.body);
-        this.messageService.add({severity: 'success', summary: 'Successfully Processed',
-         detail: 'File upload task has been initiated.'});
+        const resJson = JSON.parse(event.body);
+        this.uploadResponse.emit(resJson);
+        // this.messageService.add({severity: 'success', summary: 'Successfully Processed',
+        //  detail:  resJson.data});
        // var resJson = JSON.parse(event.body);
       }
     },
     error => {
-      this.messageService.add({severity:'error', summary: 'Error', detail:'Error In File Upload'});
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error In File Upload'});
       console.log('in error response');
           console.log('error status>>>');
           console.log(error.status);

@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api';
 export class FileUploadService {
    constructor(private http: HttpClient, private appService: AppService,  private messageService: MessageService) { }
 
-   uploadFile(file: File, apiUrl: string): Observable<HttpEvent<{}>> {
+   uploadFile(file: File, apiUrl: string): Observable<HttpEvent<string>> {
     const formdata: FormData = new FormData();
     formdata.append('file', file);
     const req = new HttpRequest('POST', this.appService.apiUrl + '' + apiUrl, formdata, {

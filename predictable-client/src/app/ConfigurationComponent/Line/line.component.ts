@@ -2,39 +2,47 @@ import {Component, OnInit} from '@angular/core';
 import {ILine} from '../../Models/lineModel';
 import { IOrgnization } from '../../Models/companyModel';
 import {LineService} from '../../Services/line.service';
-import {CompanyService} from '../../Services/company.service';
 import { AppService} from '../../app.service';
 import {MessageService} from 'primeng/api';
+import { OrganizationService } from '../../OrganizationComponent/organization.service';
+import { Organization } from '../../Models/organization-model';
 @Component({
     templateUrl : './line.component.html'
 })
-export class LinesComponent{
+export class LinesComponent implements OnInit {
     lines: ILine[];
-    orgnizations: IOrgnization[];
+    orgnizations: Organization[];
     errorMessage: string;
     editableMode = false;
     selectedLine: ILine;
-    isSuperAdmin:boolean=false;
-    userOrgnizationId:number = 0;
+    isSuperAdmin = false;
+    userOrgnizationId = 0;
 
-    constructor(private lineService: LineService, private companyService: CompanyService, private appService:AppService,
-                private messageService: MessageService) {}
+    constructor(private lineService: LineService, private organizationService: OrganizationService,
+        private appService: AppService, private messageService: MessageService) {}
 
     ngOnInit(): void {
-        if(this.appService.loggedInUserInfo){
-            if(this.appService.loggedInUserInfo.roles != null && this.appService.loggedInUserInfo.roles.length > 0 && this.appService.loggedInUserInfo.roles[0].role == "superadmin"){
-                this.isSuperAdmin = true;
-            }
-            if(this.appService.loggedInUserInfo.companyVO != null){
-                this.userOrgnizationId = this.appService.loggedInUserInfo.companyVO.id;
-            }
+        const loggedInUserInfo = this.appService.getLoggedInUser();
+        this.isSuperAdmin = this.appService.isSuperAdmin();
+        if (loggedInUserInfo.companyVO != null) {
+                this.userOrgnizationId = loggedInUserInfo.companyVO.id;
         }
         this.getCompanies();
         this.getLines();
     }
 
-    getCompanies():void{
-        this.orgnizations = this.companyService.getCompanies();
+    getCompanies(): void {
+        this.organizationService.getOrganizations().subscribe(
+            response => {
+               console.log(response);
+               if (response['status'] === 'SUCCESS') {
+                this.orgnizations = response['data'];
+               } else {
+                // this.errorMessage = "";
+               }
+            },
+            error => this.errorMessage = 'Error in call'
+        );
     }
 
     getLines(): void {
@@ -47,26 +55,23 @@ export class LinesComponent{
     }
 
     saveLine(): void {
-        if(!this.isSuperAdmin){
+        if ( !this.isSuperAdmin) {
             this.selectedLine.companyId = this.userOrgnizationId;
         }
-        
-        if(this.selectedLine.id > 0){
+        if ( this.selectedLine.id > 0 ) {
             this.lineService.updateLine(this.selectedLine);
-            this.messageService.add({severity:'info', summary: 'Success', detail:'Updated Successfully'});
-        }
-        else{
+            this.messageService.add({severity: 'info', summary: 'Success', detail: 'Updated Successfully'});
+        } else {
             this.lineService.saveLine(this.selectedLine);
-            this.messageService.add({severity:'info', summary: 'Success', detail:'Saved Successfully'});
+            this.messageService.add({severity: 'info', summary: 'Success', detail: 'Saved Successfully'});
         }
-        
         this.selectedLine = {} as ILine;
         this.editableMode = false;
 
         this.getLines();
     }
 
-    editLine(line: ILine):void{
+    editLine(line: ILine): void {
         this.selectedLine = line;
         this.editableMode = true;
     }
@@ -76,9 +81,9 @@ export class LinesComponent{
         this.editableMode = false;
     }
 
-    deleteLine(id:number):void{
+    deleteLine(id: number): void {
         this.lineService.deleteLine(id);
-        this.messageService.add({severity:'info', summary: 'Success', detail:'Deleted Successfully'});
+        this.messageService.add({severity: 'info', summary: 'Success', detail: 'Deleted Successfully'});
         this.editableMode = false;
         this.getLines();
     }

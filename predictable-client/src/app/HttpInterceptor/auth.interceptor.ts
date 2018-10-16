@@ -4,11 +4,12 @@ import { HttpClient, HttpHeaders, HttpInterceptor, HttpRequest,
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { tap, finalize } from 'rxjs/operators';
+import { AppService } from '../app.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-    constructor(private  route: Router) {
+    constructor(private  route: Router, private appService: AppService) {
 
     }
 
@@ -45,6 +46,7 @@ export class AuthInterceptor implements HttpInterceptor {
                       console.log(error.status);
                     if ( error.status === 401) {
                         console.log('matched');
+                        this.appService.logout();
                         this.route.navigate(['/login']);
                     }
                   }

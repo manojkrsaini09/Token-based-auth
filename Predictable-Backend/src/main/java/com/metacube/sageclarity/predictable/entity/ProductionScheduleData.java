@@ -26,10 +26,10 @@ public class ProductionScheduleData extends BaseEntity<String> implements Serial
     private Long orderQuantity;
 
     @Column
-    private Long machineTime;
+    private Double machineTime;
 
     @Column
-    private Long setupTime;
+    private Double setupTime;
 
     @Column
     private LocalDateTime scheduledStart;
@@ -75,19 +75,19 @@ public class ProductionScheduleData extends BaseEntity<String> implements Serial
         this.product = product;
     }
 
-    public Long getMachineTime() {
+    public Double getMachineTime() {
         return machineTime;
     }
 
-    public void setMachineTime(Long machineTime) {
+    public void setMachineTime(Double machineTime) {
         this.machineTime = machineTime;
     }
 
-    public Long getSetupTime() {
+    public Double getSetupTime() {
         return setupTime;
     }
 
-    public void setSetupTime(Long setupTime) {
+    public void setSetupTime(Double setupTime) {
         this.setupTime = setupTime;
     }
 

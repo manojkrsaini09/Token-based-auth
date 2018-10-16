@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: [ './login.component.css']
 })
- export class LoginComponent implements OnInit{
+ export class LoginComponent implements OnInit {
   pageTitle = 'Login Page';
   credentials = {username: '', password: ''};
   errorMessage = '';
@@ -19,17 +19,6 @@ import { Router } from '@angular/router';
   ngOnInit() {
       if (this.app.isLoggedIn()) {
         this.router.navigate(['/dashboard']);
-      //   this.app.authenticate(undefined).subscribe(
-      //     data => {
-      //       console.log('data');
-      //       if (this.app.authenticated) {
-      //         console.log('navigate to dashboard');
-      //           this.router.navigate(['/dashboard']);
-      //       }
-      //      },
-      //     // error => this.errorMessage = <any> error
-      //      error =>  this.errorMessage  = 'Invalid Credentials'
-      //  );
        } else {
         this.router.navigate(['/login']);
        }
@@ -38,13 +27,12 @@ import { Router } from '@angular/router';
   login() {
     this.app.authenticate(this.credentials).subscribe(
     data => {
-      if (this.app.authenticated) {
+      if (this.app.isLoggedIn()) {
            this.router.navigate(['/dashboard']);
           } else {
              this.errorMessage = 'Invalid Credentials';
           }
      },
-     // error => this.errorMessage = <any> error
      error =>  this.errorMessage  = 'Invalid Credentials'
   );
   }

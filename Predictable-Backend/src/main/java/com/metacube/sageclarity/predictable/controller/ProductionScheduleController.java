@@ -95,22 +95,27 @@ public class ProductionScheduleController {
     @RequestMapping(value = "/schedule/all", produces = "application/json",method = RequestMethod.GET)
     public
     @ResponseBody
-    ResponseObject getAllSchedules(@RequestParam(value = "companyId") String  companyIdStr){
+    ResponseObject getAllSchedules(HttpSession session){
         Long companyId = null;
-        if(StringUtils.isNotBlank(companyIdStr)){
-            companyId = Long.parseLong(companyIdStr);
+        UserVO userVO = ApplicationUtil.getUser(session);
+        if(userVO == null){
+            return ResponseObject.getResponse("Unable to find user.",ExceptionType.GENERAL_ERROR.getCode());
         }
+        User user = new User(userVO);
+
         try {
             List<ProductionScheduleMaster> schedules = null;
+            if(user.getCompany()!=null)
+             companyId = user.getCompany().getId();
             if(companyId!=null){
-                schedules = scheduleService.getAllByCompanyId(companyId);
+                schedules = scheduleService.getAllByCompanyId(user.getCompany().getId());
             }else{
                 schedules = scheduleService.getAll();
             }
             return ResponseObject.getResponse(ResponseHelper.getScheduleVOList(schedules));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return ResponseObject.getResponse(ExceptionType.GENERAL_ERROR.getMessage()
+            return  ResponseObject.getResponse(ExceptionType.GENERAL_ERROR.getMessage()
                     , ExceptionType.GENERAL_ERROR.getCode());
         }
     }
@@ -165,30 +170,30 @@ public class ProductionScheduleController {
     }*/
 
    @PostMapping("/schedule/upload")
-   public ResponseEntity<ResponseObject> uploadSchedule(@RequestParam("file") MultipartFile file,HttpSession session) {
+   public ResponseObject uploadSchedule(@RequestParam("file") MultipartFile file,HttpSession session) {
        String message = "";
        try {
            DataUploadRowVO dataVO = dataReader.readData(file.getInputStream());
            if(dataVO==null){
                message = "Failed to read file " + file.getOriginalFilename() + "!";
-               return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.INTERNAL_SERVER_ERROR);
+               return ResponseObject.getResponse(message,ExceptionType.GENERAL_ERROR.getCode());
            }
            UserVO userVO = ApplicationUtil.getUser(session);
            if(userVO == null){
-               return new ResponseEntity(ResponseObject.getResponse("Unable to find user."),HttpStatus.INTERNAL_SERVER_ERROR);
+               return ResponseObject.getResponse("Unable to find user.",ExceptionType.GENERAL_ERROR.getCode());
            }
            User user = new User(userVO);
            ProductionScheduleMaster master = scheduleService.createProductionScheduleFromExcelDataVO(dataVO,file.getOriginalFilename(),user);
            if(master==null || master.getId()==0){
                message = "Unable to create schedule master from file." + file.getOriginalFilename() + "!";
-               return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.INTERNAL_SERVER_ERROR);
+               return ResponseObject.getResponse(message,ExceptionType.GENERAL_ERROR.getCode());
            }
            productionScheduleDataService.createScheduleDataListFromUploadedFileData(dataVO,master);
            message = "Schedule creation task has been initiated for file." + file.getOriginalFilename() + "!";
-           return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.OK);
+           return ResponseObject.getResponse(new ProductionScheduleMasterVO(master));
        } catch (Exception e) {
            message = "FAIL to upload " + file.getOriginalFilename() + "!";
-           return new ResponseEntity(ResponseObject.getResponse(message),HttpStatus.INTERNAL_SERVER_ERROR);
+           return ResponseObject.getResponse(message,ExceptionType.GENERAL_ERROR.getCode());
        }
    }
 }

@@ -8,8 +8,7 @@ import { TokenStorage } from './HttpInterceptor/token.storage';
 
 @Injectable()
 export class AppService {
-  authenticated = false;
-  loggedInUserInfo: User;
+  // loggedInUserInfo: User;
   apiUrl = '/api/';
   errorMessage = '';
 
@@ -41,24 +40,35 @@ export class AppService {
   //   }
 
   isLoggedIn(): boolean {
-    var token: String = this.token.getToken();
+    const token: String = this.token.getToken();
     return token && token.length > 0;
   }
 
+  getLoggedInUser(): User {
+    const user: User = this.token.getUser();
+    return user;
+  }
+
+  isSuperAdmin(): boolean {
+    const user = this.getLoggedInUser();
+    if ( user.roles != null &&
+      user.roles.length > 0 &&
+      user.roles[0].role === 'superadmin') {
+      return true;
+    } else {
+      return false;
+    }
+  }
   authenticate (credentials): Observable<any> {
     console.log('this.apiUrl');
     console.log(this.apiUrl);
     return  this.http.post<any>(this.apiUrl + 'token/generate-token', credentials).pipe(
         tap(response => {
             if ( response['status'] === 'SUCCESS') {
-              this.token.saveToken(credentials.username, response['data'].token);
-                this.authenticated = response['data'].authenticated;
-                this.loggedInUserInfo = response['data'].userVO;
-                this.errorMessage = response['data'].errorMessage;
-                console.log('this.loggedInUserInfo');
-                console.log( this.loggedInUserInfo);
+             // this.loggedInUserInfo = response['data'].userVO;
+              this.token.saveToken(credentials.username, response['data'].token, response['data'].userVO);
+              this.errorMessage = response['data'].errorMessage;
             } else {
-                this.authenticated = false;
                 this.errorMessage = response['data'].errorMessage;
             }
          }
@@ -79,14 +89,12 @@ export class AppService {
         //   catchError(this.handleError)
         // ).subscribe();
         this.token.signOut();
-        this.authenticated = false;
         this.router.navigateByUrl('/login');
       }
 
       private handleError(err: HttpErrorResponse) {
         console.log('error in login');
         this.token.signOut();
-        this.authenticated = false;
         this.router.navigate(['/login']);
         // in a real world app, we may send the server to some remote logging infrastructure
         // instead of just logging it to the console

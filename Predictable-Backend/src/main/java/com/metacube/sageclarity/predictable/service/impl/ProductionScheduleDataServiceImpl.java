@@ -7,6 +7,7 @@ import com.metacube.sageclarity.predictable.entity.*;
 import com.metacube.sageclarity.predictable.exception.ApplicationLevelException;
 import com.metacube.sageclarity.predictable.exception.InvalidParamException;
 import com.metacube.sageclarity.predictable.service.ProductionScheduleDataService;
+import com.metacube.sageclarity.predictable.util.ApplicationUtil;
 import com.metacube.sageclarity.predictable.util.LocalizationUtil;
 import com.metacube.sageclarity.predictable.vo.DataUploadRowVO;
 import org.slf4j.Logger;
@@ -121,7 +122,8 @@ public class ProductionScheduleDataServiceImpl implements ProductionScheduleData
 
         dataVO.getRowOfDataList().stream().forEach(
                 element -> scheduleData.add(this.getProductScheduleDataFromDataRow(element,master,productMap,lineMap)));
-        productionScheduleDataDao.saveAll(scheduleData);
+        List<ProductionScheduleData> scheduleDataFiltered = this.filterBlankRow(scheduleData);
+        scheduleDataFiltered = productionScheduleDataDao.saveAll(scheduleDataFiltered);
       /*  DemoEntity demoEntity = new DemoEntity();
         demoEntity.setName("test");
         try {
@@ -172,7 +174,7 @@ public class ProductionScheduleDataServiceImpl implements ProductionScheduleData
         if(StringUtils.isEmpty(orderQuantity))
             error += "Order quantity isn't provided.";
         else {
-           scheduleData.setOrderQuantity(Long.valueOf(orderQuantity));
+           scheduleData.setOrderQuantity(ApplicationUtil.getLong(orderQuantity));
         }
         String unit = dataRow.get(4) != null ? String.valueOf(dataRow.get(4)) : "";
         if(StringUtils.isEmpty(unit))
@@ -180,7 +182,19 @@ public class ProductionScheduleDataServiceImpl implements ProductionScheduleData
         else {
             scheduleData.setUnit(unit);
         }
-        String machineHour = dataRow.get(5) != null ? String.valueOf(dataRow.get(5)) : "";
+
+        String machineMinutes = dataRow.get(5) != null ? String.valueOf(dataRow.get(5)) : "";
+        String setUpMinutes = dataRow.get(6) != null ? String.valueOf(dataRow.get(6)) : "";
+        Double machineTime = 0.0;
+        Double setUpTime = 0.0;
+        if(!StringUtils.isEmpty(machineMinutes))
+            machineTime = Double.valueOf(machineMinutes);
+        if(!StringUtils.isEmpty(setUpMinutes))
+            setUpTime = Double.valueOf(setUpMinutes);
+        scheduleData.setMachineTime(machineTime);
+        scheduleData.setSetupTime(setUpTime);
+
+      /*  String machineHour = dataRow.get(5) != null ? String.valueOf(dataRow.get(5)) : "";
         String machineMinut = dataRow.get(6) != null ? String.valueOf(dataRow.get(6)): "";
         String machineSecond = dataRow.get(7) != null ? String.valueOf(dataRow.get(7)): "";
         Long machineTime = 0L;
@@ -201,16 +215,25 @@ public class ProductionScheduleDataServiceImpl implements ProductionScheduleData
             setUpTime +=Long.valueOf(setUpMinut)* 60;
         if(!StringUtils.isEmpty(setUpSecond))
             setUpTime += Long.valueOf(setUpSecond);
-
-        String scheduleStart = dataRow.get(11) != null ? String.valueOf(dataRow.get(11)) : "";
+*/
+        String scheduleStart = dataRow.get(7) != null ? String.valueOf(dataRow.get(7)) : "";
         LocalDateTime scheduleStartTime = null;
         if(!StringUtils.isEmpty(scheduleStart)){
             scheduleStartTime = LocalizationUtil.getLocalDateTimeFromStringDate(scheduleStart,"MM/dd/yyyy hh:mm:ss");
         }
-        scheduleData.setMachineTime(machineTime);
-        scheduleData.setSetupTime(setUpTime);
+
         scheduleData.setScheduledStart(scheduleStartTime);
         scheduleData.setErrors(error);
         return scheduleData;
+    }
+
+    public List<ProductionScheduleData> filterBlankRow(List<ProductionScheduleData> dataList){
+        List<ProductionScheduleData> tempList = new ArrayList<>(dataList.size());
+        for(ProductionScheduleData data:dataList){
+            if(!StringUtils.isEmpty(data.getWorkOrderNumber())){
+                tempList.add(data);
+            }
+        }
+        return tempList;
     }
 }
